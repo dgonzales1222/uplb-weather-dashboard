@@ -109,11 +109,10 @@ classifications follow the categories defined by PAGASA.
 
 ## Author
 
-Danilo III O. Gonzales
+Danilo III O. Gonzales <br>
 MS in Green Data Science (Data Science in Agriculture, Food, Forest, and Environment)
 Instituto Superior de Agronomia – Universidade de Lisboa (ISA–ULisboa)
 
 ## License
 
-A license has not yet been assigned. A license should be added prior to public release if
-terms of reuse are required; the MIT License is a common permissive option for academic work.
+CC BY 4.0 (Creative Commons Attribution 4.0 International) 
