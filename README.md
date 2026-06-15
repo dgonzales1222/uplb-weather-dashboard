@@ -72,9 +72,6 @@ that module and a re-run of the ingestion process.
 
 ```
 .
-├── CLAUDE.md              Project context, build rules, and heat-index reference
-├── BUILD_GUIDE.md         Phased build plan and specification
-├── PROMPT_PLAYBOOK.md     Prompts for assisted development
 ├── requirements.txt
 ├── data/                  Raw downloads and the SQLite database (excluded from version control)
 ├── src/
@@ -109,8 +106,8 @@ classifications follow the categories defined by PAGASA.
 
 ## Author
 
-Danilo III O. Gonzales <br>
-MS in Green Data Science (Data Science in Agriculture, Food, Forest, and Environment)
+**Danilo III O. Gonzales** <br>
+MS in Green Data Science (Data Science in Agriculture, Food, Forest, and Environment) <br>
 Instituto Superior de Agronomia – Universidade de Lisboa (ISA–ULisboa)
 
 ## License
