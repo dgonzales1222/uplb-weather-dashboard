@@ -85,10 +85,10 @@ that module and a re-run of the ingestion process.
 
 ## Development Status
 
-| Phase | Description                                   | Status      |
-|-------|-----------------------------------------------|-------------|
-| 0     | Project setup and documentation               | Complete    |
-| 1     | Open-Meteo data ingestion                     | Ongoing    |
+| Phase | Description                                   | Status      | Date of Completion|
+|-------|-----------------------------------------------|-------------|------|
+| 0     | Project setup and documentation               | Complete    |15/06/2026|
+| 1     | Open-Meteo data ingestion                     | Complete    |16/06/2026|
 | 2     | Relational database design and loading        | Pending     |
 | 3     | Heat-index module with unit tests             | Pending     |
 | 4     | General Weather page                          | Pending     |
