@@ -88,7 +88,7 @@ that module and a re-run of the ingestion process.
 | Phase | Description                                   | Status      |
 |-------|-----------------------------------------------|-------------|
 | 0     | Project setup and documentation               | Complete    |
-| 1     | Open-Meteo data ingestion                     | Pending     |
+| 1     | Open-Meteo data ingestion                     | Ongoing    |
 | 2     | Relational database design and loading        | Pending     |
 | 3     | Heat-index module with unit tests             | Pending     |
 | 4     | General Weather page                          | Pending     |
