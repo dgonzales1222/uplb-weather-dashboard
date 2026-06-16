@@ -64,6 +64,10 @@ Open-Meteo API ──fetch──> data/raw/ ──clean──> SQLite (data/weat
   (sources.py)                       (clean.py / ingest.py)                  (src/app/)
 ```
 
+> **Note:** `data/` — both the raw downloads (`data/raw/`) and the SQLite database
+> (`data/weather.db`) — is git-ignored and stored only on the local machine. It is never
+> committed to the repository; run the ingestion steps to regenerate it locally.
+
 All external data access is confined to `src/data/sources.py`, and the dashboard reads only
 from the local database. Substituting the UPLB-NAS records therefore requires changes only to
 that module and a re-run of the ingestion process.
