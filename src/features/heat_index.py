@@ -39,6 +39,15 @@ PAGASA_BANDS = (
     (52.0, float("inf"), "Extreme Danger"),
 )
 
+# U.S. NWS heat-index categories, converted from °F to °C (lower, upper, label).
+NWS_BANDS = (
+    (float("-inf"), 26.7, "Not hazardous"),  # < 80 °F
+    (26.7, 32.2, "Caution"),                 # 80–90 °F
+    (32.2, 39.4, "Extreme Caution"),         # 90–103 °F
+    (39.4, 51.7, "Danger"),                  # 103–125 °F
+    (51.7, float("inf"), "Extreme Danger"),  # ≥ 125 °F
+)
+
 
 def _c_to_f(temp_c):
     return temp_c * 9.0 / 5.0 + 32.0
