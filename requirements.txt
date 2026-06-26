@@ -3,6 +3,8 @@
 pandas
 streamlit
 plotly
+dash
+dash-bootstrap-components
 prophet
 openmeteo-requests
 requests-cache
