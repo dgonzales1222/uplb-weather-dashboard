@@ -21,6 +21,9 @@ data/*.db
 # --- HTTP response cache (Open-Meteo client) ---
 .cache/
 
+# --- UPLB brand kit (licensed fonts + Visual Identity Guidebook; keep out of public repo) ---
+logo_and_branding/
+
 # --- Editor / IDE ---
 .vscode/
 .idea/
