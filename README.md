@@ -1,4 +1,4 @@
-# AVCAD Project: UPLB Weather Data Dashboard
+# UPLB Weather Data Dashboard
 
 A relational database and public web dashboard for long-term weather observations from the
 University of the Philippines Los Baños National Agromet Station (UPLB-NAS), Los Baños, Laguna.
