@@ -9,6 +9,20 @@ This repository contains the work of a master's capstone project by Danilo III O
 MS in Green Data Science (Data Science in Agriculture, Food, Forest, and Environment),
 Instituto Superior de Agronomia – Universidade de Lisboa (ISA–ULisboa).
 
+## Live Preview
+
+A static preview of the dashboard design is hosted on GitHub Pages:
+
+**https://dgonzales1222.github.io/uplb-weather-dashboard/**
+
+> **Disclaimer.** GitHub Pages serves static files only, so this link shows how the dashboard is
+> *meant to look* — it is **not the live application**, and its charts are placeholder mock-ups
+> rather than figures computed from the database. Serving this design as a fully interactive public
+> site would require a complete web stack (for example, a Django back end with a dedicated front
+> end). For now, the interactive dashboard — real Open-Meteo data, live charts, and the heat-index
+> forecast — is the **Dash application** in this repository: run it locally (see below) or deploy it
+> to Render. The same UPLB design is implemented directly in that Dash app.
+
 ## Data Source
 
 The intended data source is the observational record of the UPLB National Agromet Station.
@@ -32,7 +46,10 @@ modifying the database, analysis, or dashboard components.
   temperature, and monthly and annual climatology summaries.
 - A Climate Insights page presenting a multi-year heat-index trend with PAGASA danger bands, a
   calendar heatmap of the daily heat index, an annual count of days exceeding a 41 °C heat
-  index, and a 7–14 day LSTM forecast with accuracy metrics (MAE, RMSE).
+  index, and a 7–14 day LSTM forecast (drawn as a Monte-Carlo trajectory) with backtest accuracy
+  metrics (MAE, RMSE).
+- A custom UPLB-branded interface — an "editorial" liquid-glass theme with light/dark mode, a
+  feels-like danger gauge, and a campus-photo footer — built directly in Dash.
 - A modular data layer enabling a transition from Open-Meteo data to UPLB-NAS records without
   changes to downstream components.
 
@@ -40,7 +57,8 @@ modifying the database, analysis, or dashboard components.
 
 Python 3.12 or later, with pandas for data processing, SQLite for storage, Dash and Plotly
 for the web interface, a PyTorch LSTM for the short-term heat-index forecast, and the
-openmeteo-requests client for data retrieval.
+openmeteo-requests client for data retrieval. The interface is a custom UPLB-branded design
+implemented with Dash components and CSS (Dash Bootstrap Components is used only for layout).
 
 ## Installation and Usage
 
@@ -83,15 +101,17 @@ that module and a re-run of the ingestion process.
 
 ```
 .
-├── requirements.txt
-├── data/                  Raw downloads and the SQLite database (excluded from version control)
+├── requirements.txt          Full dependencies for local development (includes PyTorch)
+├── requirements-render.txt   Slim, torch-free dependencies used for deployment
+├── render.yaml               Render deployment blueprint
+├── data/                     Raw downloads and the SQLite database (excluded from version control)
 ├── src/
-│   ├── data/              Data retrieval, cleaning, and ingestion
-│   ├── db/                Relational schema
-│   ├── features/          Heat-index computation (NWS formula and PAGASA bands)
-│   ├── models/            Short-term forecasting (Prophet)
-│   └── app/               Streamlit pages
-└── tests/                 Unit tests for the heat-index computation
+│   ├── data/                 Data retrieval, cleaning, and ingestion
+│   ├── db/                   Relational schema and read-only queries
+│   ├── features/             Heat-index computation (NWS formula and PAGASA bands)
+│   ├── models/               Short-term forecast (PyTorch LSTM) and offline precompute
+│   └── dashapp/              Dash web app — pages, theme, and assets (CSS, logos, icons, fonts)
+└── tests/                    Unit and application smoke tests
 ```
 
 ## Development Status
@@ -102,17 +122,18 @@ that module and a re-run of the ingestion process.
 | 1     | Open-Meteo data ingestion                     | Complete    | 16/06/2026 |
 | 2     | Relational database design and loading        | Complete    | 17/06/2026 |
 | 3     | Heat-index module with unit tests             | Complete    | 18/06/2026 |
-| 4     | General Weather page (Dash)                   | Complete    | 18/06/2026 |
-| 5     | Climate Insights and heat-index page          | Complete    | 18/06/2026 |
+| 4     | General Weather page (Dash)                   | Complete    | 21/06/2026 |
+| 5     | Climate Insights and heat-index page          | Complete    | 24/06/2026 |
 | 6     | Short-term forecast (PyTorch LSTM)            | Complete    | 27/06/2026 |
-| 7     | Refinement and deployment (Render)            | Ongoing     | —          |
+| 7     | Interface design and deployment (Render)      | Ongoing     | —          |
 | 8     | Integration of UPLB-NAS records               | Pending     | —          |
 
 > **Status (28/06/2026):** Phases 0–6 complete. The dashboard is built on **Dash/Plotly**
 > (migrated from the originally planned Streamlit), and the short-term forecast uses a **PyTorch
-> LSTM** (replacing the originally planned Prophet). Phase 7 is in progress — the app is
-> deployment-ready for **Render** (torch-free server via a precomputed forecast); only the live
-> deploy remains. Phase 8 (real UPLB-NAS records) is next.
+> LSTM** (replacing the originally planned Prophet). Phase 7 is in progress: the UPLB-branded
+> **editorial / liquid-glass interface** has been implemented, and the app is deployment-ready for
+> **Render** (torch-free server via a precomputed forecast) — only the live deploy remains.
+> Phase 8 (real UPLB-NAS records) is next.
 
 ## Data Attribution
 

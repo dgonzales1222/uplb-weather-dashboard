@@ -1,7 +1,8 @@
-"""Dash web app — entry point (replaces the Streamlit app).
+"""Dash web app — entry point (the "Editorial" UPLB design).
 
-Multipage shell: a top header (title + logo slots), a left sidebar nav menu, and
-the page container. Reads only from data/weather.db via src/db/queries.py.
+Single styled dashboard: a sticky brand header with nav pills + dark toggle, the
+page container, and a campus-photo footer. Reads only from data/weather.db via
+src/db/queries.py.
 
 Run with:  python -m src.dashapp.app   (http://localhost:8050)
 """
@@ -12,9 +13,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 import dash_bootstrap_components as dbc
-from dash import Dash, html, page_container
+from dash import Dash, Input, Output, callback, dcc, html, page_container
 
-import config
 from src.dashapp import theme
 
 _HERE = Path(__file__).resolve().parent
@@ -31,16 +31,31 @@ app = Dash(
 server = app.server  # for gunicorn / deployment
 
 app.layout = html.Div([
-    theme.header(
-        "🌡️ UPLB-NAS Weather Data Dashboard",
-        f"Open-Meteo ERA5 stand-in · Los Baños, Laguna · {config.LAT}, {config.LON}",
-        logos=["/assets/uplb.png", "/assets/iabe.jpg", "/assets/abseed.png"],
-    ),
-    html.Div(className="body", children=[
-        theme.sidebar(),
-        html.Div(page_container, className="content"),
-    ]),
+    dcc.Location(id="url"),
+    theme.header(),
+    html.Main(html.Div(page_container, className="page")),
+    theme.footer(),
 ])
+
+
+@callback(Output("nav-pills", "children"), Input("url", "pathname"))
+def _nav(pathname):
+    return theme.nav_links(pathname)
+
+
+# Dark-mode toggle: flip the `dark` class on <html>; persist in localStorage.
+app.clientside_callback(
+    """
+    function(n) {
+        const root = document.documentElement;
+        if (n) { root.classList.toggle('dark'); }
+        try { localStorage.setItem('uplb-dark', root.classList.contains('dark') ? '1' : '0'); } catch (e) {}
+        return root.classList.contains('dark') ? '☀' : '☾';
+    }
+    """,
+    Output("theme-toggle", "children"),
+    Input("theme-toggle", "n_clicks"),
+)
 
 
 if __name__ == "__main__":

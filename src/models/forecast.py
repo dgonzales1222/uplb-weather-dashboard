@@ -137,13 +137,63 @@ def _recursive_forecast(model, series: pd.Series, vmin, vmax, horizon: int):
     return future_dates, np.array(preds) * (vmax - vmin) + vmin
 
 
+N_SIMS = 400  # Monte-Carlo sample paths for the displayed trajectory + band
+
+
+def _simulate(model, series: pd.Series, vmin, vmax, horizon: int, resid_std: float,
+              n_sims: int = N_SIMS, seed: int = SEED):
+    """Monte-Carlo sample paths: recursive forecast with a residual draw fed back
+    at each step. Returns (future_dates, sims) where sims is (n_sims, horizon) °C.
+
+    Unlike the deterministic mean forecast (which collapses to a smooth line), each
+    path carries day-to-day variability of the size the model can't predict, so a
+    representative path looks like the real series. All paths run as one batch.
+    """
+    import torch
+    rng = np.random.default_rng(seed)
+    s = series.dropna()
+    feats = np.column_stack([_scale(s.to_numpy(dtype=float), vmin, vmax),
+                             _doy_features(s.index)]).astype("float32")
+    future_dates = pd.date_range(pd.Timestamp(s.index[-1]) + pd.Timedelta(days=1),
+                                 periods=horizon, freq="D")
+    future_doy = _doy_features(future_dates).astype("float32")
+    span = (vmax - vmin) or 1.0
+    sigma = resid_std / span                      # residual std in scaled space
+    device = next(model.parameters()).device
+
+    window = np.repeat(feats[-LOOKBACK:][None, :, :], n_sims, axis=0)  # (n_sims, L, 3)
+    sims = np.empty((n_sims, horizon), dtype=float)
+    model.eval()
+    with torch.no_grad():
+        for k in range(horizon):
+            x = torch.from_numpy(window.astype("float32")).to(device)
+            pred = model(x).cpu().numpy()                              # (n_sims,)
+            # Anchor day 1 to the deterministic prediction so the path joins the
+            # observed series continuously; uncertainty then grows day by day.
+            draw = 0.0 if k == 0 else rng.normal(0.0, sigma, size=n_sims)
+            noisy = pred + draw
+            sims[:, k] = noisy * span + vmin
+            step = np.column_stack([noisy, np.full(n_sims, future_doy[k, 0]),
+                                    np.full(n_sims, future_doy[k, 1])]).astype("float32")
+            window = np.concatenate([window[:, 1:, :], step[:, None, :]], axis=1)
+    return future_dates, sims
+
+
 def fit_forecast(series: pd.Series, horizon: int = 14) -> pd.DataFrame:
-    """Train on the recent series; return the next `horizon` days of forecast."""
+    """Train on the recent series; return the next `horizon` days as a simulated
+    trajectory (`yhat`) with a 5–95% simulation band (`yhat_lower/upper`).
+
+    `yhat` is the sample path whose mean level is closest to the simulation mean —
+    central, but with realistic daily variability (not the flat conditional mean).
+    """
     model, vmin, vmax, resid_std = _train(series)
-    dates, yhat = _recursive_forecast(model, series, vmin, vmax, horizon)
-    band = 1.96 * resid_std
-    return pd.DataFrame({"ds": dates, "yhat": yhat,
-                         "yhat_lower": yhat - band, "yhat_upper": yhat + band})
+    dates, sims = _simulate(model, series, vmin, vmax, horizon, resid_std)
+    mean_path = sims.mean(axis=0)
+    lower = np.percentile(sims, 5, axis=0)
+    upper = np.percentile(sims, 95, axis=0)
+    central = int(np.argmin(np.abs(sims.mean(axis=1) - mean_path.mean())))
+    return pd.DataFrame({"ds": dates, "yhat": sims[central],
+                         "yhat_lower": lower, "yhat_upper": upper})
 
 
 def backtest(series: pd.Series, horizon: int = 14) -> dict:
