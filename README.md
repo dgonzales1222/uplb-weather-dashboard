@@ -27,13 +27,12 @@ modifying the database, analysis, or dashboard components.
 ## Features
 
 - A relational SQLite database covering stations, variables, and observations.
-- A General Weather page providing latest readings, interactive time-series charts for
-  temperature, rainfall, humidity, and wind, monthly and annual climatology summaries, and
-  CSV export.
-- A Climate Insights page presenting a multi-year heat-index trend with PAGASA and U.S.
-  National Weather Service danger bands, a calendar heatmap of dangerous days, an annual count
-  of days exceeding a 41 °C heat index, and a 7–14 day forecast with accuracy metrics
-  (MAE, RMSE).
+- A General Weather page providing latest readings (with a feels-like heat index), interactive
+  time-series charts for temperature, rainfall, humidity, wind, pressure, and wet-bulb
+  temperature, and monthly and annual climatology summaries.
+- A Climate Insights page presenting a multi-year heat-index trend with PAGASA danger bands, a
+  calendar heatmap of the daily heat index, an annual count of days exceeding a 41 °C heat
+  index, and a 7–14 day LSTM forecast with accuracy metrics (MAE, RMSE).
 - A modular data layer enabling a transition from Open-Meteo data to UPLB-NAS records without
   changes to downstream components.
 
@@ -97,17 +96,23 @@ that module and a re-run of the ingestion process.
 
 ## Development Status
 
-| Phase | Description                                   | Status      | Date of Completion|
-|-------|-----------------------------------------------|-------------|------|
-| 0     | Project setup and documentation               | Complete    |15/06/2026|
-| 1     | Open-Meteo data ingestion                     | Complete    |16/06/2026|
-| 2     | Relational database design and loading        | Completed    | 17/06/2026|
-| 3     | Heat-index module with unit tests             | Completed     | 18/06/2026|
-| 4     | General Weather page                          | Ongoing    |
-| 5     | Climate Insights and heat-index page          | Pending     |
-| 6     | Short-term forecast (Prophet)                 | Pending     |
-| 7     | Refinement and deployment                     | Pending     |
-| 8     | Integration of UPLB-NAS records               | Pending     |
+| Phase | Description                                   | Status      | Date of Completion |
+|-------|-----------------------------------------------|-------------|--------------------|
+| 0     | Project setup and documentation               | Complete    | 15/06/2026 |
+| 1     | Open-Meteo data ingestion                     | Complete    | 16/06/2026 |
+| 2     | Relational database design and loading        | Complete    | 17/06/2026 |
+| 3     | Heat-index module with unit tests             | Complete    | 18/06/2026 |
+| 4     | General Weather page (Dash)                   | Complete    | 18/06/2026 |
+| 5     | Climate Insights and heat-index page          | Complete    | 18/06/2026 |
+| 6     | Short-term forecast (PyTorch LSTM)            | Complete    | 27/06/2026 |
+| 7     | Refinement and deployment (Render)            | Ongoing     | —          |
+| 8     | Integration of UPLB-NAS records               | Pending     | —          |
+
+> **Status (28/06/2026):** Phases 0–6 complete. The dashboard is built on **Dash/Plotly**
+> (migrated from the originally planned Streamlit), and the short-term forecast uses a **PyTorch
+> LSTM** (replacing the originally planned Prophet). Phase 7 is in progress — the app is
+> deployment-ready for **Render** (torch-free server via a precomputed forecast); only the live
+> deploy remains. Phase 8 (real UPLB-NAS records) is next.
 
 ## Data Attribution
 
