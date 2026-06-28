@@ -5,7 +5,7 @@ streamlit
 plotly
 dash
 dash-bootstrap-components
-prophet
+torch
 openmeteo-requests
 requests-cache
 retry-requests

@@ -13,28 +13,19 @@ BAND_COLORS = {
 }
 
 
-def _logo(src):
-    """An <img> for a logo (served from /assets) or a dashed 'LOGO' placeholder."""
-    if src:
-        return html.Img(src=src, className="logo-img")
-    return html.Div("LOGO", className="logo-box")
+def header(title, subtitle="", logos=None):
+    """Top header banner: title/subtitle on the left, a logo strip on the right.
 
-
-def header(title, subtitle="", logo=None, partner_logos=None):
-    """Top header banner: left logo slot, title/subtitle, right logo slots.
-
-    Pass `logo` (e.g. "/assets/uplb.png") and `partner_logos` (list of asset URLs)
-    once you have them; until then dashed placeholders show where they'll sit.
+    `logos` is a list of asset URLs (e.g. "/assets/uplb.png"), rendered left→right.
     """
-    rights = partner_logos if partner_logos is not None else [None, None]
+    imgs = [html.Img(src=src, className="logo-img") for src in (logos or [])]
     return html.Div(className="app-header", children=[
         html.Div(className="row", children=[
-            _logo(logo),
             html.Div(className="txt", children=[
                 html.Div(title, className="ttl"),
                 html.Div(subtitle, className="sub"),
             ]),
-            html.Div([_logo(p) for p in rights], className="logos"),
+            html.Div(imgs, className="logos"),
         ]),
     ])
 

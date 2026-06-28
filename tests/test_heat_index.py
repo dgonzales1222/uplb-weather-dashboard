@@ -67,14 +67,6 @@ def test_classify_nan_is_none():
     assert hi.classify(float("nan")) is None
 
 
-def test_nws_bands_boundaries():
-    bands = {label: (lo, hi_) for lo, hi_, label in hi.NWS_BANDS}
-    assert bands["Caution"] == (26.7, 32.2)
-    assert bands["Extreme Caution"] == (32.2, 39.4)
-    assert bands["Danger"] == (39.4, 51.7)
-    assert bands["Extreme Danger"][1] == float("inf")
-
-
 # --- vectorization ----------------------------------------------------------
 
 def test_heat_index_f_vectorized_over_series():

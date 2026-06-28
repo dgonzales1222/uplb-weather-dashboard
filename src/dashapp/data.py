@@ -46,9 +46,21 @@ def heat_index_daily() -> pd.DataFrame:
     return out
 
 
+@lru_cache(maxsize=4)
+def heat_index_forecast(horizon: int = 14):
+    """(forecast_df, {mae, rmse}) for the daily heat index; cached per horizon."""
+    from src.models import forecast
+    series = heat_index_daily()["hi_c"]
+    if series.empty:
+        empty = pd.DataFrame(columns=["ds", "yhat", "yhat_lower", "yhat_upper"])
+        return empty, {"mae": float("nan"), "rmse": float("nan")}
+    return forecast.fit_forecast(series, horizon), forecast.backtest(series, horizon)
+
+
 def clear():
     """Drop the caches (used by tests that swap the database)."""
     daily.cache_clear()
     units.cache_clear()
     station.cache_clear()
     heat_index_daily.cache_clear()
+    heat_index_forecast.cache_clear()

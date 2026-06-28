@@ -34,6 +34,7 @@ app.layout = html.Div([
     theme.header(
         "🌡️ UPLB-NAS Weather Data Dashboard",
         f"Open-Meteo ERA5 stand-in · Los Baños, Laguna · {config.LAT}, {config.LON}",
+        logos=["/assets/uplb.png", "/assets/iabe.jpg", "/assets/abseed.png"],
     ),
     html.Div(className="body", children=[
         theme.sidebar(),

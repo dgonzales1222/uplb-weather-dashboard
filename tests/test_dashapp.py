@@ -108,11 +108,26 @@ def test_heat_index_daily(dashapp):
     assert hid["band"].notna().all()
 
 
-def test_trend_callback_returns_figure(dashapp):
+def test_trend_figure_and_legend(dashapp):
     import plotly.graph_objects as go
     ci = _ci_module()
-    fig_p = ci.update_trend("PAGASA")
-    fig_n = ci.update_trend("NWS")
-    assert isinstance(fig_p, go.Figure) and isinstance(fig_n, go.Figure)
-    assert len(fig_p.data) == 2                 # annual-mean line + trend line
-    assert len(fig_p.layout.shapes) >= 1        # shaded danger bands
+    fig = ci._trend_fig()
+    legend = ci._band_legend()
+    assert isinstance(fig, go.Figure)
+    assert len(fig.data) == 2                 # annual-mean line + trend line
+    assert len(fig.layout.shapes) >= 1        # shaded PAGASA bands
+    assert len(legend) == 4                   # 4 PAGASA danger-band legend entries
+
+
+def test_forecast_callback_returns_figure_and_metrics(dashapp, monkeypatch):
+    import plotly.graph_objects as go
+    from src.models import forecast
+    # Tiny LSTM so training is fast on the synthetic DB.
+    monkeypatch.setattr(forecast, "EPOCHS", 2)
+    monkeypatch.setattr(forecast, "LOOKBACK", 10)
+    monkeypatch.setattr(forecast, "UNITS", 8)
+    ci = _ci_module()
+    fig, metrics = ci.update_forecast(7)
+    assert isinstance(fig, go.Figure)
+    assert len(fig.data) == 3                    # uncertainty band + actual + forecast
+    assert metrics is not None

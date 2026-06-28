@@ -44,3 +44,10 @@ body { background: #eef2f6; }
 .band-badge { color: #fff; padding: .1rem .5rem; border-radius: 8px; font-size: .8rem; }
 .feels { font-size: .95rem; margin: .25rem 0 .75rem; }
 .muted { color: #64748b; font-size: .85rem; margin-bottom: .5rem; }
+
+/* danger-band color key */
+.legend-item {
+  display: inline-flex; align-items: center; gap: .35rem;
+  margin-right: 1rem; font-size: .8rem; color: #475569;
+}
+.legend-item .swatch { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
